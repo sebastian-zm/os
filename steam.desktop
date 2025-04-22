@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Steam (Gamescope)
+Comment=Launch Steam within Gamescope
+Exec=/usr/bin/steam-session
+Type=Application

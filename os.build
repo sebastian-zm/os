@@ -1,0 +1,11 @@
+[Unit]
+Description=My custom fedora kinoite
+Before=bootc-fetch-apply-updates.service
+
+[Build]
+ImageTag=localhost/os
+SetWorkingDirectory=/usr/share/os/
+Pull=always
+
+[Install]
+WantedBy=bootc-fetch-apply-updates.service
