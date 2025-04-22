@@ -62,7 +62,7 @@ jobs:
           docker save ${{ steps.meta.outputs.tags }} -o artifacts/os-image.tar
           
       - name: Upload OS image artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: os-image
           path: artifacts/os-image.tar
