@@ -28,7 +28,7 @@ RUN dnf install -y \
 RUN dnf install -y --allowerasing vim-default-editor
 
 # Packet Tracer
-COPY Packet_Tracer822_amd64_signed.deb /home/
+COPY Cisco*Packet*.deb Packet*Tracer*.deb /home/
 RUN curl -sSL https://raw.githubusercontent.com/thiagoojack/packettracer-fedora/refs/heads/main/setup.sh | sh
 
 # Proton
