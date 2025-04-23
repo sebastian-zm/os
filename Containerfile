@@ -39,6 +39,9 @@ RUN dnf install -y \
 # DNIe
 RUN rpm -Uvh --nodeps \
   https://www.dnielectronico.es/descargas/distribuciones_linux/libpkcs11-dnie-1.6.8-1.x86_64.rpm
+RUN echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module
+RUN ln -sf /usr/share/libpkcs11-dnie/AC\ RAIZ\ DNIE\ 2.crt /usr/share/pki/ca-trust-source/anchors/AC\ RAIZ\ DNIE\ 2.crt
+RUN update-ca-trust
   
 COPY steam.desktop /usr/share/wayland-sessions/
 COPY steam-session steamos-session-select /usr/bin/
