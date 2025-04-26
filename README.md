@@ -35,19 +35,14 @@ The custom image includes:
 ### Development
 - Visual Studio Code
 - VirtualBox
-- Development tools
-
-### Utilities
 - Vim (set as default editor)
 - FZF (fuzzy finder)
 - Bat (enhanced cat)
 
-### Networking
+### Others
 - Cisco Packet Tracer (requires separate download)
 - Tailscale
 - ProtonVPN
-
-### Others
 - LibreWolf Browser
 - ProtonMail
 - ProtonPass

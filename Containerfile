@@ -14,16 +14,12 @@ RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
 COPY vscode.repo /etc/yum.repos.d/
 
 RUN dnf install -y \
-  https://repo.protonvpn.com/fedora-$(rpm -E %fedora)-stable/protonvpn-stable-release/protonvpn-stable-release-1.0.3-1.noarch.rpm
-
-RUN dnf install -y \
   # akmod-nvidia \
-  @multimedia @development-tools \
-  code virtualbox \
+  @multimedia \
+  git code virtualbox \
   steam gamescope mangohud \
   vim fzf bat \
-  tailscale librewolf \
-  proton-vpn-gnome-desktop
+  tailscale firefox librewolf
 
 RUN dnf install -y --allowerasing vim-default-editor
 
@@ -37,6 +33,7 @@ RUN dnf install -y \
   https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm
 
 # DNIe
+# --nodeps because pinentry-gtk2 doesn't exist.
 RUN rpm -Uvh --nodeps \
   https://www.dnielectronico.es/descargas/distribuciones_linux/libpkcs11-dnie-1.6.8-1.x86_64.rpm
 RUN echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module
