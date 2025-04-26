@@ -42,7 +42,6 @@ The custom image includes:
 ### Others
 - Cisco Packet Tracer (requires separate download)
 - Tailscale
-- ProtonVPN
 - LibreWolf Browser
 - ProtonMail
 - ProtonPass
