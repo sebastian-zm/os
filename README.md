@@ -39,29 +39,6 @@ podman build -t localhost/os .
 bootc switch --transport containers-storage localhost/os
 ```
 
-## Included Software
-
-The custom image includes:
-
-### Gaming
-- Steam (with Gamescope session)
-- MangoHud (performance overlay)
-
-### Development
-- Visual Studio Code
-- VirtualBox
-- Vim (set as default editor)
-- FZF (fuzzy finder)
-- Bat (enhanced cat)
-
-### Others
-- Cisco Packet Tracer (requires separate download)
-- Tailscale
-- LibreWolf Browser
-- ProtonMail
-- ProtonPass
-- DNIe support (Spanish electronic ID)
-
 ## Using Steam in Gamescope Session
 
 The build includes a dedicated Gamescope session for Steam that provides an optimized gaming experience:
