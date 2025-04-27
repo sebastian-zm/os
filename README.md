@@ -8,6 +8,8 @@ This repository contains configuration files to build a customized version of Fe
 
 Due to licensing restrictions, Cisco Packet Tracer isn't included in this repository. To obtain it:
 
+**AI generated. May or may not be accurate.**
+
 1. Visit [Cisco Networking Academy](https://www.netacad.com/)
 2. Create a free account or log in to your existing account
 3. Navigate to the "Resources" section
