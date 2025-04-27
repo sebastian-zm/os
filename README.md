@@ -18,14 +18,14 @@ Due to licensing restrictions, Cisco Packet Tracer isn't included in this reposi
 
 ## Installing Cisco Packet Tracer
 
-To fully install Cisco Packet Tracer, once you have booted the OS, you have to run:
+To fully install Cisco Packet Tracer, once you have installed the OS, you have to run:
 
 ```bash
 # Install Cisco Packet Tracer
 curl -sSL https://raw.githubusercontent.com/thiagoojack/packettracer-fedora/refs/heads/main/setup.sh | sh
 ```
 
-This is because the script writes to both /var (which can only be modified after installation) and other locations (which cannot be modified after instalation).
+This is because the script writes to both /var (which can only be modified after installation) and other locations (which cannot be modified after instalation). Don't worry about errors.
 
 ## Using the OS Image
 
