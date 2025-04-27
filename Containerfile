@@ -19,12 +19,15 @@ RUN dnf install -y \
   git code virtualbox \
   steam gamescope mangohud \
   vim fzf bat \
-  tailscale firefox librewolf
+  tailscale firefox librewolf \
+  pinta minder krita \
+  obs-studio flowblade
 
 RUN dnf install -y --allowerasing vim-default-editor
 
 # Packet Tracer
 COPY Cisco*Packet*.deb Packet*Tracer*.deb /home/
+# Do this again after installing
 RUN curl -sSL https://raw.githubusercontent.com/thiagoojack/packettracer-fedora/refs/heads/main/setup.sh | sh
 
 # Proton
@@ -46,7 +49,7 @@ RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select
 
 COPY os.build /usr/share/containers/systemd/
 
-COPY * .* /usr/share/os/
+COPY * .* /usr/share/os-container/
 
 # Upgrade again in case we are using podman cache from another build
 RUN dnf upgrade -y

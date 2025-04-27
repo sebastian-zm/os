@@ -4,7 +4,7 @@ Before=bootc-fetch-apply-updates.service
 
 [Build]
 ImageTag=localhost/os
-SetWorkingDirectory=/usr/share/os/
+SetWorkingDirectory=/usr/share/os-container/
 Pull=always
 
 [Install]

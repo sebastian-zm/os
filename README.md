@@ -1,6 +1,8 @@
 # Custom Fedora Kinoite OS Build
 
-This repository contains configuration files to build a customized version of Fedora Kinoite with additional software pre-installed. The custom image includes gaming tools, development utilities, privacy-focused applications, and networking tools.
+**Warning: README is mostly AI generated**
+
+This repository contains configuration files to build a customized version of Fedora Kinoite with additional software pre-installed. This is customized for my use, so you probably want to use this as inspiration at most, and not use it directly. The custom image includes gaming tools, development utilities, privacy-focused applications, and networking tools.
 
 ## Getting Cisco Packet Tracer
 
@@ -11,6 +13,17 @@ Due to licensing restrictions, Cisco Packet Tracer isn't included in this reposi
 3. Navigate to the "Resources" section
 4. Download "Packet Tracer 8.2.2" or the latest available version
 5. Save the `.deb` file in the root directory of this repository
+
+## Installing Cisco Packet Tracer
+
+To fully install Cisco Packet Tracer, once you have booted the OS, you have to run:
+
+```bash
+# Install Cisco Packet Tracer
+curl -sSL https://raw.githubusercontent.com/thiagoojack/packettracer-fedora/refs/heads/main/setup.sh | sh
+```
+
+This is because the script writes to both /var (which can only be modified after installation) and other locations (which cannot be modified after instalation).
 
 ## Using the OS Image
 
