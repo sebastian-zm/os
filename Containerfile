@@ -19,16 +19,14 @@ RUN dnf install -y \
   git code virtualbox \
   steam gamescope mangohud \
   vim fzf bat \
-  tailscale firefox librewolf \
-  pinta minder krita \
-  obs-studio flowblade
+  tailscale firefox librewolf
 
 RUN dnf install -y --allowerasing vim-default-editor
 
 # Packet Tracer
-COPY Cisco*Packet*.deb Packet*Tracer*.deb /home/
+# COPY Cisco*Packet*.deb Packet*Tracer*.deb /home/
 # Do this again after installing
-RUN curl -sSL https://raw.githubusercontent.com/thiagoojack/packettracer-fedora/refs/heads/main/setup.sh | sh
+# RUN curl -sSL https://raw.githubusercontent.com/thiagoojack/packettracer-fedora/refs/heads/main/setup.sh | sh
 
 # Proton
 RUN dnf install -y \
@@ -46,6 +44,9 @@ RUN update-ca-trust
 COPY steam.desktop /usr/share/wayland-sessions/
 COPY steam-session steamos-session-select /usr/bin/
 RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select
+
+# Allow nix installer
+RUN mkdir -p /nix
 
 COPY os.build /usr/share/containers/systemd/
 
