@@ -16,19 +16,14 @@ COPY vscode.repo /etc/yum.repos.d/
 RUN dnf install -y \
   # akmod-nvidia \
   @multimedia \
-  git code virtualbox \
+  virtualbox \
   steam gamescope mangohud \
-  vim fzf bat \
-  tailscale firefox librewolf
+  tailscale \
+  firefox
 
 RUN dnf install -y --allowerasing vim-default-editor
 
-# Packet Tracer
-# COPY Cisco*Packet*.deb Packet*Tracer*.deb /home/
-# Do this again after installing
-# RUN curl -sSL https://raw.githubusercontent.com/thiagoojack/packettracer-fedora/refs/heads/main/setup.sh | sh
-
-# Proton
+# Official Proton packages
 RUN dnf install -y \
   https://proton.me/download/mail/linux/ProtonMail-desktop-beta.rpm \
   https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm
