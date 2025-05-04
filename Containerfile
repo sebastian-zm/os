@@ -1,6 +1,4 @@
-FROM quay.io/fedora/fedora-kinoite:42
-
-RUN dnf upgrade -y
+FROM quay.io/fedora/fedora-sway-atomic:42
 
 # RPM Fusion
 RUN dnf install -y \
@@ -42,13 +40,6 @@ RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select
 
 # Allow nix installer
 RUN mkdir -p /nix
-
-COPY os.build /usr/share/containers/systemd/
-
-COPY * .* /usr/share/os-container/
-
-# Upgrade again in case we are using podman cache from another build
-RUN dnf upgrade -y
 
 # Lint the container
 RUN bootc container lint
