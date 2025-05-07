@@ -14,6 +14,7 @@ COPY vscode.repo /etc/yum.repos.d/
 RUN dnf install -y \
   # akmod-nvidia \
   @multimedia \
+  podman-compose \
   virtualbox \
   steam gamescope mangohud \
   tailscale \
