@@ -1,31 +1,29 @@
 FROM quay.io/fedora/fedora-sway-atomic:42
 
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
+COPY vscode.repo /etc/yum.repos.d/
+
 # RPM Fusion
 RUN dnf install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 RUN dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
-RUN dnf config-manager addrepo --from-repofile=https://repo.librewolf.net/librewolf.repo
-
-RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
-COPY vscode.repo /etc/yum.repos.d/
+# RUN dnf config-manager addrepo --from-repofile=https://repo.librewolf.net/librewolf.repo
 
 RUN dnf install -y \
   # akmod-nvidia \
   @multimedia \
-  podman-compose \
   virtualbox \
   steam gamescope mangohud \
   tailscale \
-  firefox
-
-RUN dnf install -y --allowerasing vim-default-editor
-
-# Official Proton packages
-RUN dnf install -y \
+  firefox \
+  # Official proton packages
   https://proton.me/download/mail/linux/ProtonMail-desktop-beta.rpm \
   https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm
+
+RUN dnf install -y --allowerasing vim-default-editor && \
+  dnf clean all
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
@@ -45,9 +43,11 @@ RUN mkdir -p /nix
 # Lint the container
 RUN bootc container lint
 
-# Define required labels for this bootc image to be recognized as such.
-LABEL containers.bootc 1
-LABEL ostree.bootable 1
+# Metadata labels
+LABEL containers.bootc="1" \
+      ostree.bootable="1" \
+      org.opencontainers.image.source="https://github.com/sebastian-zm/os" \
+      org.opencontainers.image.created="${DATE:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
 
 # Optional labels that only apply when running this image as a container. These keep the default entry point running under systemd.
 STOPSIGNAL SIGRTMIN+3
