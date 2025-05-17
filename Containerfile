@@ -13,9 +13,7 @@ RUN dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable
   steam gamescope mangohud \
   tailscale \
   firefox \
-  # Official proton package
   https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm \
-  # Official google package
   https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
   && \
   dnf clean all
