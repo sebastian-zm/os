@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora-kinoite:42
+FROM quay.io/fedora/fedora-bootc:42
 
 # RPM Fusion
 RUN dnf5 install -y \
@@ -10,12 +10,12 @@ RUN dnf5 install -y \
   dnf config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @multimedia \
+  @cosmic-desktop \
+  @hardware-support @multimedia @fonts @domain-client @printing \
   steam gamescope mangohud \
   tailscale \
-  firefox \
-  google-chrome-stable \
-  https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm \
+  firefox google-chrome-stable \
+  obs-studio obs-studio-plugin-x264 \
   && \
   dnf5 clean all
 
