@@ -37,9 +37,7 @@ RUN bootc container lint
 
 # Metadata labels
 LABEL containers.bootc="1" \
-      ostree.bootable="1" \
-      org.opencontainers.image.source="https://github.com/sebastian-zm/os" \
-      org.opencontainers.image.created="${DATE:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+      ostree.bootable="1"
 
 # Optional labels that only apply when running this image as a container. These keep the default entry point running under systemd.
 STOPSIGNAL SIGRTMIN+3
