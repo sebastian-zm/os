@@ -8,7 +8,6 @@ RUN dnf install -y \
 RUN dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
   && \
   dnf install -y \
-  @swaywm-extended \
   @multimedia \
   steam gamescope mangohud \
   tailscale \
