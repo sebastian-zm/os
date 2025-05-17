@@ -7,6 +7,8 @@ RUN dnf5 install -y \
   && \
   dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
   && \
+  dnf config-manager setopt google-chrome.enabled=1 \
+  && \
   dnf5 install -y \
   @multimedia \
   steam gamescope mangohud \
