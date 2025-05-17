@@ -1,22 +1,25 @@
-FROM quay.io/fedora/fedora-kinoite:42
+FROM quay.io/fedora/fedora-bootc:42
 
 # RPM Fusion
-RUN dnf install -y \
+RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-
-RUN dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
+  fedora-workstation-repositories \
+  'dnf5-command(config-manager)' \
   && \
-  dnf install -y \
-  @swaywm-extended \
-  @multimedia \
+  dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+  && \
+  dnf config-manager setopt google-chrome.enabled=1 \
+  && \
+  dnf5 install -y \
+  @cosmic-desktop \
+  @hardware-support @multimedia @fonts @domain-client @printing \
   steam gamescope mangohud \
   tailscale \
-  firefox \
-  https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm \
-  https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
+  firefox google-chrome-stable \
+  obs-studio obs-studio-plugin-x264 \
   && \
-  dnf clean all
+  dnf5 clean all
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
@@ -38,9 +41,7 @@ RUN bootc container lint
 
 # Metadata labels
 LABEL containers.bootc="1" \
-      ostree.bootable="1" \
-      org.opencontainers.image.source="https://github.com/sebastian-zm/os" \
-      org.opencontainers.image.created="${DATE:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+      ostree.bootable="1"
 
 # Optional labels that only apply when running this image as a container. These keep the default entry point running under systemd.
 STOPSIGNAL SIGRTMIN+3
