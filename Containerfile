@@ -1,21 +1,21 @@
 FROM quay.io/fedora/fedora-kinoite:42
 
 # RPM Fusion
-RUN dnf install -y \
+RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-
-RUN dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
   && \
-  dnf install -y \
+  dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+  && \
+  dnf5 install -y \
   @multimedia \
   steam gamescope mangohud \
   tailscale \
   firefox \
+  google-chrome-stable \
   https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm \
-  https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
   && \
-  dnf clean all
+  dnf5 clean all
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
