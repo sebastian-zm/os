@@ -4,20 +4,14 @@ FROM quay.io/fedora/fedora-bootc:42
 RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
-  fedora-workstation-repositories \
   'dnf5-command(config-manager)' \
   && \
   dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
   && \
-  dnf5 config-manager setopt google-chrome.enabled=1 \
-  && \
   dnf5 install -y \
-  @cosmic-desktop sddm \
-  @hardware-support @multimedia @fonts @domain-client @printing \
+  @core @hardware-support @multimedia @fonts @printing @base-graphical \
   steam gamescope mangohud \
   tailscale \
-  firefox google-chrome-stable \
-  obs-studio obs-studio-plugin-x264 \
   && \
   dnf5 clean all
 
