@@ -5,14 +5,14 @@ RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
   fedora-workstation-repositories \
-  'dnf5-command(config-manager)' \
+  dnf5-plugins \
   && \
   dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
   && \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @kde-desktop \
+  @kde-desktop-environment \
   @hardware-support @multimedia @fonts @domain-client @printing \
   steam gamescope mangohud \
   tailscale \
@@ -36,7 +36,7 @@ RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select
 RUN mkdir -p /nix
 
 # Lint the container
-RUN bootc container lint
+RUN find /var/log -type f ! -empty -delete && bootc container lint
 
 # Metadata labels
 LABEL containers.bootc="1" \
