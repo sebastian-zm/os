@@ -12,7 +12,7 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @cosmic-desktop @swaywm-extended \
+  @cosmic-desktop sddm \
   @hardware-support @multimedia @fonts @domain-client @printing \
   steam gamescope mangohud \
   tailscale \
