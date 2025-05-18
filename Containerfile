@@ -12,7 +12,8 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @cosmic-desktop sddm \
+  # KDE
+  @kde-desktop \
   @hardware-support @multimedia @fonts @domain-client @printing \
   steam gamescope mangohud \
   tailscale \
@@ -27,8 +28,7 @@ RUN rpm -Uvh --nodeps \
   https://www.dnielectronico.es/descargas/distribuciones_linux/libpkcs11-dnie-1.6.8-1.x86_64.rpm && \
   echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module && \
   ln -sf /usr/share/libpkcs11-dnie/AC\ RAIZ\ DNIE\ 2.crt /usr/share/pki/ca-trust-source/anchors/AC\ RAIZ\ DNIE\ 2.crt && \
-  update-ca-trust
-  
+  update-ca-t
 COPY steam.desktop /usr/share/wayland-sessions/
 COPY steam-session steamos-session-select /usr/bin/
 RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select
