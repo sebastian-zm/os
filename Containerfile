@@ -18,11 +18,7 @@ RUN dnf5 install -y \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
   && \
-  dnf5 clean all \
-  && \
-  echo 'u cosmic-greeter - "Cosmic Greeter Account" /var/lib/cosmic-greeter -' > /usr/lib/sysusers.d/02-cosmic-greeter.conf \
-  && \
-  echo 'd /var/lib/cosmic-greeter 0750 cosmic-greeter cosmic-greeter' > /usr/lib/tmpfiles.d/02-cosmic-greeter.conf
+  dnf5 clean all
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
