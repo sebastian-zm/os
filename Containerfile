@@ -18,8 +18,6 @@ RUN dnf5 install -y \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
   && \
-  systemctl enable --force sddm \
-  && \
   dnf5 clean all \
   && \
   echo 'u cosmic-greeter - "Cosmic Greeter Account" /var/lib/cosmic-greeter -' > /usr/lib/sysusers.d/02-cosmic-greeter.conf \
