@@ -11,14 +11,20 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @kde-desktop \
+  @cosmic-desktop \
   @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   steam gamescope mangohud \
   tailscale \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
   && \
-  dnf5 clean all
+  systemctl enable --force sddm \
+  && \
+  dnf5 clean all \
+  && \
+  echo 'u cosmic-greeter - "Cosmic Greeter Account" /var/lib/cosmic-greeter -' > /usr/lib/sysusers.d/02-cosmic-greeter.conf \
+  && \
+  echo 'd /var/lib/cosmic-greeter 0750 cosmic-greeter cosmic-greeter' > /usr/lib/tmpfiles.d/02-cosmic-greeter.conf
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
