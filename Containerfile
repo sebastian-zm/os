@@ -12,7 +12,7 @@ RUN dnf5 install -y \
   && \
   dnf5 install -y \
   @kde-desktop \
-  @hardware-support @multimedia @fonts @domain-client @printing \
+  @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   steam gamescope mangohud \
   tailscale \
   firefox google-chrome-stable \
