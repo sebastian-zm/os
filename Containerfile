@@ -13,6 +13,7 @@ RUN dnf5 install -y \
   dnf5 install -y \
   @cosmic-desktop \
   @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
+  cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
   tailscale \
   firefox google-chrome-stable \
