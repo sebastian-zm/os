@@ -19,7 +19,8 @@ RUN dnf5 install -y \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
   && \
-  dnf5 clean all
+  dnf5 clean all && \
+  systemctl set-default graphical.target
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
