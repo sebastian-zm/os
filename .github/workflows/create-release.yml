@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        branch: ['release/1.0']  # Add more release branches as needed
+        branch: ['release/0.1']  # Add more release branches as needed
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
