@@ -31,7 +31,12 @@ RUN rpm -Uvh --nodeps \
 
 COPY steam.desktop /usr/share/wayland-sessions/
 COPY steam-session steamos-session-select /usr/bin/
-RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select
+COPY bootc-fetch-updates.timer bootc-fetch-updates.service /usr/lib/systemd/system/
+
+RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select \
+    && \
+    systemctl disable bootc-fetch-apply-updates.timer
+
 
 # Allow nix installer, for user configuration with home-manager, which cannot work without a /nix directory
 RUN mkdir -p /nix
