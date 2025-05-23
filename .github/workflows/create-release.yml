@@ -1,0 +1,171 @@
+name: Create Daily Release
+
+on:
+  schedule:
+    - cron: '00 05 * * *'  # Run daily at 5 AM UTC
+  workflow_dispatch:      # Allow manual trigger
+  push:
+    branches:
+      - 'release/*'       # Trigger on pushes to release branches to bump version
+
+permissions:
+  contents: write         # Needed to create releases and commits
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ['release/1.0']  # Add more release branches as needed
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0  # Need full history to check for changes
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Get or initialize version
+        id: version
+        run: |
+          # Check if VERSION file exists
+          if [ -f VERSION ]; then
+            CURRENT_VERSION=$(cat VERSION)
+            echo "Current version: ${CURRENT_VERSION}"
+          else
+            # Initialize version based on branch name
+            BRANCH_VERSION=$(echo "${{ matrix.branch }}" | sed 's/release\///')
+            CURRENT_VERSION="${BRANCH_VERSION}.0"
+            echo "${CURRENT_VERSION}" > VERSION
+            git add VERSION
+            git commit -m "Initialize VERSION file"
+            git push
+            echo "Initialized version: ${CURRENT_VERSION}"
+          fi
+          
+          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Check if version bump needed
+        id: check_bump
+        if: github.event_name == 'push'
+        run: |
+          # Check if the last commit modified the VERSION file
+          if git diff --name-only HEAD HEAD~1 | grep -q "^VERSION$"; then
+            echo "VERSION file was modified in last commit, skip bump"
+            echo "needs_bump=false" >> $GITHUB_OUTPUT
+          else
+            echo "Code changes detected, version bump needed"
+            echo "needs_bump=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump patch version
+        id: bump_version
+        if: github.event_name == 'push' && steps.check_bump.outputs.needs_bump == 'true'
+        run: |
+          CURRENT_VERSION="${{ steps.version.outputs.current_version }}"
+          
+          # Split version into components
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${CURRENT_VERSION}"
+          
+          # Increment patch version
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+          
+          # Update VERSION file
+          echo "${NEW_VERSION}" > VERSION
+          git add VERSION
+          git commit -m "Bump version to ${NEW_VERSION}"
+          git push
+          
+          echo "Bumped version from ${CURRENT_VERSION} to ${NEW_VERSION}"
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Generate release version
+        id: release_version
+        run: |
+          # Use bumped version if available, otherwise current version
+          if [ -n "${{ steps.bump_version.outputs.new_version }}" ]; then
+            BASE_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          else
+            BASE_VERSION="${{ steps.version.outputs.current_version }}"
+          fi
+          
+          TIMESTAMP=$(date +%Y%m%d%H%M)
+          FULL_VERSION="v${BASE_VERSION}.${TIMESTAMP}"
+          
+          echo "version=${FULL_VERSION}" >> $GITHUB_OUTPUT
+          echo "base_version=${BASE_VERSION}" >> $GITHUB_OUTPUT
+          echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
+
+      - name: Get commits since last release
+        id: check_commits
+        run: |
+          # Find the last release for this branch
+          LAST_RELEASE=$(gh release list --limit 100 | grep "^v${{ steps.version.outputs.current_version }}" | head -1 | cut -f1)
+          
+          if [ -z "$LAST_RELEASE" ]; then
+            # No release with current version, check for any release
+            LAST_RELEASE=$(gh release list --limit 100 | grep "^v" | head -1 | cut -f1)
+          fi
+          
+          if [ -z "$LAST_RELEASE" ]; then
+            echo "No previous release found"
+            echo "commit_count=all" >> $GITHUB_OUTPUT
+          else
+            # Check if there are new commits since last release
+            COMMITS=$(git rev-list ${LAST_RELEASE}..HEAD --count 2>/dev/null || echo "unknown")
+            echo "commit_count=${COMMITS}" >> $GITHUB_OUTPUT
+            echo "last_release=${LAST_RELEASE}" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          VERSION="${{ steps.release_version.outputs.version }}"
+          BASE_VERSION="${{ steps.release_version.outputs.base_version }}"
+          TIMESTAMP="${{ steps.release_version.outputs.timestamp }}"
+          
+          # Create release notes
+          cat > release_notes.md << EOF
+          ## Daily Build - ${TIMESTAMP}
+          
+          This is an automated build from the ${{ matrix.branch }} branch.
+          Base version: ${BASE_VERSION}
+          
+          ### Changes
+          EOF
+          
+          if [ "${{ steps.check_commits.outputs.commit_count }}" == "all" ]; then
+            echo "First automated release for this branch." >> release_notes.md
+          elif [ "${{ steps.check_commits.outputs.commit_count }}" == "0" ] || [ "${{ steps.check_commits.outputs.commit_count }}" == "unknown" ]; then
+            echo "No code changes since last release. This build includes the latest base image updates." >> release_notes.md
+          else
+            echo "Includes ${{ steps.check_commits.outputs.commit_count }} commits since ${{ steps.check_commits.outputs.last_release }}" >> release_notes.md
+            echo "" >> release_notes.md
+            echo "### Commits" >> release_notes.md
+            git log --pretty=format:"- %h: %s" ${{ steps.check_commits.outputs.last_release }}..HEAD | grep -v "Bump version to" | head -20 >> release_notes.md
+          fi
+          
+          echo "" >> release_notes.md
+          echo "### Container Image" >> release_notes.md
+          echo "Pull this release:" >> release_notes.md
+          echo '```bash' >> release_notes.md
+          echo "docker pull ghcr.io/${{ github.repository }}:${VERSION}" >> release_notes.md
+          echo "docker pull ghcr.io/${{ github.repository }}:${BASE_VERSION}" >> release_notes.md
+          echo '```' >> release_notes.md
+
+      - name: Create release
+        run: |
+          gh release create "${{ steps.release_version.outputs.version }}" \
+            --target "${{ matrix.branch }}" \
+            --title "${{ steps.release_version.outputs.version }}" \
+            --notes-file release_notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}
