@@ -18,6 +18,7 @@ RUN dnf5 install -y \
   tailscale \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
+  NetworkManager-* \
   && \
   dnf5 clean all && \
   systemctl set-default graphical.target
