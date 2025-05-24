@@ -15,6 +15,7 @@ RUN dnf5 install -y \
   @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
+  git gh \
   tailscale \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
