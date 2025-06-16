@@ -11,7 +11,7 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @cosmic-desktop \
+  @cosmic-desktop @swaywm-extended \
   @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
@@ -19,7 +19,7 @@ RUN dnf5 install -y \
   tailscale \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
-  NetworkManager-* \
+  NetworkManager-openvpn \
   && \
   dnf5 clean all && \
   systemctl set-default graphical.target
