@@ -20,6 +20,7 @@ RUN dnf5 install -y \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
   NetworkManager-openvpn \
+  skopeo jq \
   && \
   dnf5 clean all && \
   systemctl set-default graphical.target
@@ -31,11 +32,9 @@ RUN rpm -Uvh --nodeps \
   echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module && \
   ln -sf /usr/share/libpkcs11-dnie/AC\ RAIZ\ DNIE\ 2.crt /usr/share/pki/ca-trust-source/anchors/AC\ RAIZ\ DNIE\ 2.crt
 
-COPY steam.desktop /usr/share/wayland-sessions/
-COPY steam-session steamos-session-select /usr/bin/
-COPY bootc-fetch-updates.timer bootc-fetch-updates.service /usr/lib/systemd/system/
+COPY usr/ /usr/
 
-RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select \
+RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select /usr/bin/jupiter-biosupdate /usr/bin/steamos-select-branch \
     && \
     systemctl disable bootc-fetch-apply-updates.timer
 

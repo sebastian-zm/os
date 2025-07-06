@@ -1,0 +1,2 @@
+#!/bin/sh
+exec gamescope --mangoapp -e -- steam -steamdeck -steamos3

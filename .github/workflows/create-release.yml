@@ -169,3 +169,10 @@ jobs:
             --notes-file release_notes.md
         env:
           GH_TOKEN: ${{ github.token }}
+
+      - name: Trigger Docker build
+        run: |
+          gh workflow run docker-publish.yml \
+            --ref ${{ matrix.branch }}
+        env:
+          GH_TOKEN: ${{ github.token }}
