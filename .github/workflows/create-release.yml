@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write         # Needed to create releases and commits
+  actions: write         # Needed to trigger release action
 
 jobs:
   create-release:
