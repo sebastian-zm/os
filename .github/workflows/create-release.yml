@@ -86,7 +86,7 @@ jobs:
           echo "Bumped version from ${CURRENT_VERSION} to ${NEW_VERSION}"
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Generate release version
+- name: Generate release version
         id: release_version
         run: |
           # Use bumped version if available, otherwise current version
@@ -97,9 +97,13 @@ jobs:
           fi
           
           TIMESTAMP=$(date +%Y%m%d%H%M)
-          FULL_VERSION="v${BASE_VERSION}.${TIMESTAMP}"
+
+          # Create two versions: simple semver and detailed with timestamp
+          SIMPLE_VERSION="v${BASE_VERSION}"
+          DETAILED_VERSION="v${BASE_VERSION}-${TIMESTAMP}"  # Hyphen makes it semver-compliant
           
-          echo "version=${FULL_VERSION}" >> $GITHUB_OUTPUT
+          echo "simple_version=${SIMPLE_VERSION}" >> $GITHUB_OUTPUT
+          echo "detailed_version=${DETAILED_VERSION}" >> $GITHUB_OUTPUT
           echo "base_version=${BASE_VERSION}" >> $GITHUB_OUTPUT
           echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
 
@@ -129,7 +133,8 @@ jobs:
       - name: Generate release notes
         id: release_notes
         run: |
-          VERSION="${{ steps.release_version.outputs.version }}"
+          SIMPLE_VERSION="${{ steps.release_version.outputs.simple_version }}"
+          DETAILED_VERSION="${{ steps.release_version.outputs.detailed_version }}"
           BASE_VERSION="${{ steps.release_version.outputs.base_version }}"
           TIMESTAMP="${{ steps.release_version.outputs.timestamp }}"
           
@@ -156,18 +161,32 @@ jobs:
           
           echo "" >> release_notes.md
           echo "### Container Image" >> release_notes.md
-          echo "Pull this release:" >> release_notes.md
+          echo "Pull this release using any of these tags:" >> release_notes.md
           echo '```bash' >> release_notes.md
-          echo "docker pull ghcr.io/${{ github.repository }}:${VERSION}" >> release_notes.md
+          echo "# Latest release" >> release_notes.md
+          echo "docker pull ghcr.io/${{ github.repository }}:latest" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "# Specific version" >> release_notes.md
           echo "docker pull ghcr.io/${{ github.repository }}:${BASE_VERSION}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "# Major.minor version" >> release_notes.md
+          echo "docker pull ghcr.io/${{ github.repository }}:${BASE_VERSION%.*}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "# Exact build" >> release_notes.md
+          echo "docker pull ghcr.io/${{ github.repository }}:${BASE_VERSION}-${TIMESTAMP}" >> release_notes.md
           echo '```' >> release_notes.md
 
-      - name: Create release
+- name: Create release
         run: |
-          gh release create "${{ steps.release_version.outputs.version }}" \
+          # Create the release with the detailed version name
+          gh release create "${{ steps.release_version.outputs.detailed_version }}" \
             --target "${{ matrix.branch }}" \
-            --title "${{ steps.release_version.outputs.version }}" \
+            --title "${{ steps.release_version.outputs.detailed_version }}" \
             --notes-file release_notes.md
+          
+          # Also tag with the simple semver version
+          git tag -f "${{ steps.release_version.outputs.simple_version }}"
+          git push -f origin "${{ steps.release_version.outputs.simple_version }}"
         env:
           GH_TOKEN: ${{ github.token }}
 
