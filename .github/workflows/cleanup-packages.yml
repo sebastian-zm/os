@@ -17,7 +17,7 @@ jobs:
         with:
           package-name: 'os'
           package-type: 'container'
-          older-than: 30 days
+          min-versions-to-keep: 40
           ignore-versions: '^(latest|main|v\d+\.\d+\.\d+)$'  # Keep important tags
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -26,6 +26,6 @@ jobs:
         with:
           package-name: 'os'
           package-type: 'container'
-          older-than: 7 days
+          min-versions-to-keep: 10
           delete-only-untagged-versions: true
           token: ${{ secrets.GITHUB_TOKEN }}
