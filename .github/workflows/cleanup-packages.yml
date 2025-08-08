@@ -1,0 +1,31 @@
+name: Cleanup Old Package Versions
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+  workflow_dispatch:      # Allow manual trigger
+
+permissions:
+  packages: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete versions older than 30 days
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'os'
+          package-type: 'container'
+          older-than: 30 days
+          ignore-versions: '^(latest|main|v\d+\.\d+\.\d+)$'  # Keep important tags
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete untagged versions older than 7 days
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'os'
+          package-type: 'container'
+          older-than: 7 days
+          delete-only-untagged-versions: true
+          token: ${{ secrets.GITHUB_TOKEN }}

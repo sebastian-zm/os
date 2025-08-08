@@ -83,3 +83,7 @@ jobs:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         run: |
           echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+      - name: Remove old daily builds locally
+        run: |
+          docker image prune -af --filter "until=720h"  # 30 days
