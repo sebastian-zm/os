@@ -86,7 +86,7 @@ jobs:
           echo "Bumped version from ${CURRENT_VERSION} to ${NEW_VERSION}"
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
 
-- name: Generate release version
+      - name: Generate release version
         id: release_version
         run: |
           # Use bumped version if available, otherwise current version
@@ -176,7 +176,7 @@ jobs:
           echo "docker pull ghcr.io/${{ github.repository }}:${BASE_VERSION}-${TIMESTAMP}" >> release_notes.md
           echo '```' >> release_notes.md
 
-- name: Create release
+      - name: Create release
         run: |
           # Create the release with the detailed version name
           gh release create "${{ steps.release_version.outputs.detailed_version }}" \
