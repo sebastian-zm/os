@@ -190,9 +190,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      - name: Trigger Docker build
+      - name: Trigger Docker build and wait
         run: |
-          gh workflow run docker-publish.yml \
-            --ref ${{ matrix.branch }}
-        env:
-          GH_TOKEN: ${{ github.token }}
+          RUN_ID=$(gh workflow run docker-publish.yml \
+            --ref ${{ matrix.branch }} \
+            --json | jq -r '.id')
+
+          # Wait for completion
+          gh run watch $RUN_ID --exit-status

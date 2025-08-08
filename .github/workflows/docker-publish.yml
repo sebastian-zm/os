@@ -1,5 +1,9 @@
 name: Docker
 on:
+  schedule:
+    - cron: '30 05 * * *'  # Run daily for main branch
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   release:
@@ -84,6 +88,3 @@ jobs:
         run: |
           echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
-      - name: Remove old daily builds locally
-        run: |
-          docker image prune -af --filter "until=720h"  # 30 days
