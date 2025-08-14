@@ -198,3 +198,5 @@ jobs:
 
           # Wait for completion
           gh run watch $RUN_ID --exit-status
+        env:
+          GH_TOKEN: ${{ github.token }}
