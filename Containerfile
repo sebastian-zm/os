@@ -11,11 +11,11 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @cosmic-desktop @swaywm-extended \
-  @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
+  @swaywm-extended \
+  @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
-  git gh \
+  git gh docker \
   tailscale \
   firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
