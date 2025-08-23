@@ -11,7 +11,7 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @swaywm-extended \
+  @swaywm-extended glibc-langpack-en \
   @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing @networkmanager-submodules \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
@@ -43,7 +43,7 @@ RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select /usr/bin/jup
 RUN mkdir -p /nix
 
 # Lint the container
-RUN find /var/log -type f ! -empty -delete && bootc container lint
+RUN find /var/log -type f ! -empty -delete && bootc container lint --no-truncate
 
 # Metadata labels
 LABEL containers.bootc="1" \
