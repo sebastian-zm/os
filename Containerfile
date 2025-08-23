@@ -12,7 +12,7 @@ RUN dnf5 install -y \
   && \
   dnf5 install -y \
   @swaywm-extended \
-  @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
+  @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing @networkmanager-submodules \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
   git gh \
