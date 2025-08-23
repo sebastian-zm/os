@@ -12,14 +12,14 @@ RUN dnf5 install -y \
   && \
   dnf5 install -y \
   @swaywm-extended glibc-langpack-en \
-  @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing @networkmanager-submodules \
+  @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
   git gh \
   tailscale \
-  firefox google-chrome-stable \
+  @firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
-  NetworkManager-openvpn \
+  @networkmanager-submodules NetworkManager-openvpn \
   skopeo jq \
   && \
   dnf5 clean all && \
@@ -43,7 +43,7 @@ RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select /usr/bin/jup
 RUN mkdir -p /nix
 
 # Lint the container
-RUN find /var -type f -delete && bootc container lint --no-truncate --fatal-warnings
+RUN rm -rf /var/cache/libdnf5/* /var/cache/libdnf5 2>/dev/null || find /var -type f -delete && bootc container lint --no-truncate --fatal-warnings
 
 # Metadata labels
 LABEL containers.bootc="1" \
