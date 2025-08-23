@@ -35,7 +35,7 @@ RUN rpm -Uvh --nodeps \
 
 COPY usr/ /usr/
 
-RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select /usr/bin/jupiter-biosupdate /usr/bin/steamos-select-branch \
+RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
     && \
     systemctl disable bootc-fetch-apply-updates.timer
 
