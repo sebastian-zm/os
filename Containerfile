@@ -20,6 +20,7 @@ RUN dnf5 install -y \
   @firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 \
   @networkmanager-submodules NetworkManager-openvpn \
+  power-profiles-daemon \
   skopeo jq \
   && \
   dnf5 clean all && \
