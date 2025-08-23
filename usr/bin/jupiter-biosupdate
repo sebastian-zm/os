@@ -1,2 +1,3 @@
 #!/bin/bash
 echo "Error: BIOS updates cannot be performed this way. Please use your system's official BIOS update utility or manufacturer's tools."
+exit 0;

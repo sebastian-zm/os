@@ -1,2 +1,12 @@
-#!/bin/sh
-exec gamescope --mangoapp -e -- steam -steamdeck -steamos3
+#!/usr/bin/env sh
+set -eu
+
+command -v gamescope >/dev/null 2>&1 || { echo "gamescope not found" >&2; exit 1; }
+command -v steam >/dev/null 2>&1 || { echo "steam not found" >&2; exit 1; }
+
+# Allow overrides via env vars
+: "${GAMESCOPE_FLAGS:=--mangoapp -e}"
+: "${STEAM_FLAGS:=-steamdeck -steamos3}"
+
+exec gamescope $GAMESCOPE_FLAGS -- steam $STEAM_FLAGS
+

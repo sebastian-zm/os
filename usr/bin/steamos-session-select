@@ -1,2 +1,25 @@
 #!/usr/bin/env sh
-steam -shutdown
+set -eu
+
+# Ask Steam to shutdown if installed
+if command -v steam >/dev/null 2>&1; then
+  steam -shutdown || true
+fi
+
+# Wait up to ~10s for Steam to exit to avoid dangling session
+i=0
+while [ $i -lt 20 ]; do
+  if ! pgrep -x steam >/dev/null 2>&1; then
+    break
+  fi
+  sleep 0.5
+  i=$((i+1))
+done
+
+# If this is used to exit a gamescope session, try to terminate gamescope gracefully
+if pgrep -x gamescope >/dev/null 2>&1; then
+  pkill -TERM -x gamescope || true
+fi
+
+exit 0
+

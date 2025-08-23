@@ -1,0 +1,3 @@
+set -eu
+
+exec /usr/bin/steamos-update "$@"

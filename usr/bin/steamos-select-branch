@@ -1,53 +1,74 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 REGISTRY="ghcr.io/sebastian-zm/os"
 
-show_usage() {
-    echo "Usage: steamos-select-branch [-c|-l|<tag>]"
-    echo "  -c        Show current tag"
-    echo "  -l        List available tags"
-    echo "  <tag>     Switch to specified tag"
+usage() {
+  cat <<EOF
+Usage: steamos-select-branch [-c|-l|<tag>]
+  -c, --current   Show current tag
+  -l, --list      List available tags
+  -h, --help      Show this help
+  <tag>           Switch to specified tag
+EOF
 }
 
-show_current() {
-    bootc status --json | jq -r '.status.booted.image.image.image' 2>/dev/null || echo "Unable to determine current tag"
+need_cmd() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2; exit 1; }; }
+
+current_ref() {
+  need_cmd jq
+  if [ "$(id -u)" -ne 0 ]; then
+    echo "This action likely requires root. Re-run with sudo." >&2
+    exit 1
+  fi
+  if bootc status --json >/dev/null 2>&1; then
+    # Try to extract an image reference; adapt if bootc changes fields
+    bootc status --json \
+      | jq -r '.status.booted.image.image.image // .status.booted.image.image.reference // .status.booted.image.reference // empty'
+  else
+    echo ""
+  fi
+}
+
+current_tag() {
+  ref="$(current_ref || true)"
+  [ -n "$ref" ] || { echo "unknown"; return 0; }
+  # Extract substring after last colon; handle digests by stripping @sha256 as well
+  tag="${ref##*:}"
+  tag="${tag%%@sha256*}"
+  echo "$tag"
 }
 
 list_tags() {
-    echo "Fetching available tags from $REGISTRY..."
-    # Use skopeo to list tags from the registry
-    skopeo list-tags docker://$REGISTRY 2>/dev/null | jq -r '.Tags[]' | sort -V || {
-        echo "Error: Unable to fetch tags. Make sure you have network access and skopeo installed."
-        exit 1
-    }
+  need_cmd skopeo
+  need_cmd jq
+  skopeo list-tags "docker://$REGISTRY" 2>/dev/null \
+    | jq -r '.Tags[]' \
+    | sort -V
 }
 
 switch_tag() {
-    local tag="$1"
-    echo "Switching to tag: $tag"
-    bootc switch "$REGISTRY:$tag" || {
-        echo "Error: Failed to switch to tag $tag"
-        exit 1
-    }
-    echo "Successfully switched to $tag. Reboot to apply changes."
+  tag="$1"
+  [ -n "${tag:-}" ] || { echo "No tag provided" >&2; exit 1; }
+  if [ "$(id -u)" -ne 0 ]; then
+    echo "This action likely requires root. Re-run with sudo." >&2
+    exit 1
+  fi
+  # Optional: verify tag exists
+  if ! list_tags | grep -Fxq "$tag"; then
+    echo "Tag '$tag' not found in $REGISTRY" >&2
+    exit 1
+  fi
+  echo "Switching to tag: $tag"
+  bootc switch "$REGISTRY:$tag"
+  echo "Successfully switched to $tag. Reboot to apply changes."
 }
 
-# Parse arguments
-case "$1" in
-    -c|--current)
-        show_current
-        ;;
-    -l|--list)
-        list_tags
-        ;;
-    -h|--help)
-        show_usage
-        ;;
-    "")
-        show_usage
-        exit 1
-        ;;
-    *)
-        switch_tag "$1"
-        ;;
+case "${1:-}" in
+  -c|--current) current_tag ;;
+  -l|--list)    list_tags ;;
+  -h|--help)    usage ;;
+  "")           usage; exit 1 ;;
+  *)            switch_tag "$1" ;;
 esac
+
