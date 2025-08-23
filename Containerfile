@@ -43,7 +43,7 @@ RUN chmod +x /usr/bin/steam-session /usr/bin/steamos-session-select /usr/bin/jup
 RUN mkdir -p /nix
 
 # Lint the container
-RUN find /var/log -type f ! -empty -delete && bootc container lint --no-truncate
+RUN find /var -type f -delete && bootc container lint --no-truncate --fatal-warnings
 
 # Metadata labels
 LABEL containers.bootc="1" \
