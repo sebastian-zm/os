@@ -18,12 +18,13 @@ RUN dnf5 install -y \
   git gh \
   tailscale \
   @firefox google-chrome-stable \
-  obs-studio obs-studio-plugin-x264 \
+  obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn \
   power-profiles-daemon \
   skopeo jq \
   && \
-  dnf5 clean all && \
+  dnf5 clean all \
+  && \
   systemctl set-default graphical.target
 
 # DNIe
@@ -35,12 +36,12 @@ RUN rpm -Uvh --nodeps \
 
 COPY usr/ /usr/
 
-RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
-    && \
-    systemctl disable bootc-fetch-apply-updates.timer
+RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* && \
+  systemctl disable bootc-fetch-apply-updates.timer && \
+  systemctl enable psacct.service
 
 
-# Allow nix installer, for user configuration with home-manager, which cannot work without a /nix directory
+# Allow nix installer, for user configuration with home-manager, which cannot work without a /nix directory to bind mount to
 RUN mkdir -p /nix
 
 # Lint the container
