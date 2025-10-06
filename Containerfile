@@ -11,9 +11,8 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1 \
   && \
   dnf5 install -y \
-  @swaywm-extended glibc-langpack-en \
+  @swaywm @swaywm-extended glibc-langpack-en \
   @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
-  xdg-desktop-portal-wlr \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
   git gh \
@@ -21,7 +20,6 @@ RUN dnf5 install -y \
   @firefox google-chrome-stable \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn \
-  power-profiles-daemon \
   skopeo jq \
   && \
   dnf5 clean all \

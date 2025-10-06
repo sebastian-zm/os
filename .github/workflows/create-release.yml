@@ -3,14 +3,18 @@ name: Create Daily Release
 on:
   schedule:
     - cron: '00 05 * * *'  # Run daily at 5 AM UTC
-  workflow_dispatch:      # Allow manual trigger
+  workflow_dispatch:       # Allow manual trigger
   push:
     branches:
       - 'release/*'       # Trigger on pushes to release branches to bump version
 
+concurrency:
+  group: create-release-${{ github.event_name }}-${{ github.ref_name }}
+  cancel-in-progress: false
+
 permissions:
   contents: write         # Needed to create releases and commits
-  actions: write         # Needed to trigger release action
+  actions: write          # Needed to trigger release action
 
 jobs:
   create-release:
@@ -190,7 +194,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      - name: Trigger Docker build and wait
+      - name: Trigger Docker build
         run: |
           gh workflow run docker-publish.yml \
             --ref ${{ matrix.branch }}

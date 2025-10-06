@@ -5,8 +5,13 @@ on:
     - cron: '0 0 * * *'  # Run daily at midnight
   workflow_dispatch:      # Allow manual trigger
 
+concurrency:
+  group: cleanup-packages
+  cancel-in-progress: false
+
 permissions:
   packages: write
+  contents: read
 
 jobs:
   cleanup:
@@ -15,6 +20,7 @@ jobs:
       - name: Delete versions older than 30 days
         uses: actions/delete-package-versions@v5
         with:
+          owner: ${{ github.repository_owner }}
           package-name: 'os'
           package-type: 'container'
           min-versions-to-keep: 40
@@ -24,6 +30,7 @@ jobs:
       - name: Delete untagged versions older than 7 days
         uses: actions/delete-package-versions@v5
         with:
+          owner: ${{ github.repository_owner }}
           package-name: 'os'
           package-type: 'container'
           min-versions-to-keep: 10

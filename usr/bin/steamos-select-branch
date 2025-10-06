@@ -44,6 +44,8 @@ list_tags() {
   need_cmd jq
   skopeo list-tags "docker://$REGISTRY" 2>/dev/null \
     | jq -r '.Tags[]' \
+    | grep -vE '\.sig$' \
+    | grep -vE '^sha256-' \
     | sort -V
 }
 
