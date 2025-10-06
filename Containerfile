@@ -23,9 +23,14 @@ RUN dnf5 install -y \
   skopeo jq
 
 RUN dnf5 install -y \
-  v4l2loopback kmod-v4l2loopback \
+  v4l2loopback akmod-v4l2loopback \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn
+
+# Build for the kernel that’s in the image, then refresh modules.dep
+RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
+    depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
+
 
 RUN dnf5 clean all \
   && \
