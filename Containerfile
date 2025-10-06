@@ -23,6 +23,7 @@ RUN dnf5 install -y \
   skopeo jq
 
 RUN dnf5 install -y \
+  v4l2loopback kmod-v4l2loopback \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn \
 
