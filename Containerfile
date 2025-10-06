@@ -13,6 +13,7 @@ RUN dnf5 install -y \
   dnf5 install -y \
   @swaywm-extended glibc-langpack-en \
   @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
+  xdg-desktop-portal-wlr \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   steam gamescope mangohud \
   git gh \
