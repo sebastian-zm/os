@@ -1,2 +1,71 @@
-#!/bin/bash
-exit 7;
+#!/usr/bin/env bash
+# steamos-update: Deck UI-compatible update shim for bootc
+set -Eeuo pipefail
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: steamos-update {check|now|apply|status}
+  check   Exit 0 if update available, 2 if up-to-date
+  now     Download & stage update (no reboot)
+  apply   Alias of 'now'
+  status  Show bootc status
+EOF
+}
+
+need_cmd() { command -v "$1" >/dev/null 2>&1 || { echo "Missing: $1" >&2; exit 1; }; }
+log() { echo "[steamos-update] $*" >&2; }
+
+main() {
+  need_cmd bootc
+  cmd="${1:-}"; shift || true
+
+  case "$cmd" in
+    check)
+      out=""
+      if ! out="$(bootc upgrade --check 2>&1)"; then
+        log "bootc upgrade --check failed:"
+        log "$out"
+        exit 1
+      fi
+      # Heuristics for availability vs up-to-date
+      if echo "$out" | grep -qiE 'update available|new version|available update|queued.*update'; then
+        echo "Update available"
+        exit 0
+      fi
+      if echo "$out" | grep -qiE 'no changes|layers already present|up to date|no update'; then
+        echo "System up-to-date"
+        exit 2
+      fi
+      # Conservative fallback
+      log "Ambiguous check output, treating as up-to-date:"
+      log "$out"
+      echo "System up-to-date"
+      exit 2
+      ;;
+
+    now|apply)
+      # Download + stage without reboot
+      if ! bootc upgrade --quiet; then
+        log "bootc upgrade failed"
+        exit 1
+      fi
+      echo "Update staged. Reboot to apply."
+      exit 0
+      ;;
+
+    status)
+      exec bootc status
+      ;;
+
+    ""|-h|--help)
+      usage; exit 2
+      ;;
+
+    *)
+      usage; exit 2
+      ;;
+  esac
+}
+
+main "$@"
+
