@@ -8,21 +8,25 @@ RUN dnf5 install -y \
   && \
   dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
   && \
-  dnf5 config-manager setopt google-chrome.enabled=1 \
-  && \
-  dnf5 install -y \
+  dnf5 config-manager setopt google-chrome.enabled=1
+
+RUN dnf5 install -y \
   @swaywm @swaywm-extended glibc-langpack-en \
   @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
-  cascadia-code-nf-fonts cascadia-mono-nf-fonts \
+  @firefox google-chrome-stable
+
+RUN dnf5 install -y \
   steam gamescope mangohud \
-  git gh \
+  cascadia-code-nf-fonts cascadia-mono-nf-fonts \
   tailscale \
-  @firefox google-chrome-stable \
+  git gh \
+  skopeo jq
+
+RUN dnf5 install -y \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn \
-  skopeo jq \
-  && \
-  dnf5 clean all \
+
+RUN dnf5 clean all \
   && \
   systemctl set-default graphical.target
 
