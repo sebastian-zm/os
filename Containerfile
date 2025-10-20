@@ -34,7 +34,7 @@ RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' ker
 
 RUN dnf5 clean all \
   && \
-  systemctl set-default graphical.target
+  systemctl set-default multi-user.target
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.

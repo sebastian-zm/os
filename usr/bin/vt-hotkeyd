@@ -2,9 +2,10 @@
 """
 vt-hotkeyd: VT switch helper for Cage sessions.
 
-Listens for Super+F<N> on a chosen keyboard device and calls
-`loginctl activate <N>` so the compositor does not need to expose VT
-switching shortcuts. Intended to be launched manually from another TTY.
+Listens for Super+<N> (1 through 6) on a chosen keyboard device and
+calls `loginctl activate <N>` so the compositor does not need to expose
+VT switching shortcuts. Intended to be launched manually from another
+TTY.
 """
 import argparse
 import errno
@@ -28,19 +29,13 @@ KEY_RIGHTCTRL = 97
 META_KEYS = {KEY_LEFTMETA, KEY_RIGHTMETA}
 CTRL_KEYS = {KEY_LEFTCTRL, KEY_RIGHTCTRL}
 
-FKEY_TO_VT = {
-    59: 1,   # KEY_F1
-    60: 2,   # KEY_F2
-    61: 3,   # KEY_F3
-    62: 4,   # KEY_F4
-    63: 5,   # KEY_F5
-    64: 6,   # KEY_F6
-    65: 7,   # KEY_F7
-    66: 8,   # KEY_F8
-    67: 9,   # KEY_F9
-    68: 10,  # KEY_F10
-    87: 11,  # KEY_F11
-    88: 12,  # KEY_F12
+KEY_TO_VT = {
+    2: 1,  # KEY_1
+    3: 2,  # KEY_2
+    4: 3,  # KEY_3
+    5: 4,  # KEY_4
+    6: 5,  # KEY_5
+    7: 6,  # KEY_6
 }
 
 
@@ -106,13 +101,13 @@ def run_loop(fd, require_ctrl):
                     continue
                 if value != 1:  # only react on key press
                     continue
-                if code not in FKEY_TO_VT:
+                if code not in KEY_TO_VT:
                     continue
                 if not meta_down:
                     continue
                 if require_ctrl and not ctrl_down:
                     continue
-                vt = FKEY_TO_VT[code]
+                vt = KEY_TO_VT[code]
                 activate_vt(vt)
 
 
@@ -125,7 +120,7 @@ def activate_vt(vt):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Switch VTs on Super+Fx even when the compositor grabs the keyboard."
+        description="Switch VTs on Super+1..6 even when the compositor grabs the keyboard."
     )
     parser.add_argument(
         "--device",
@@ -134,7 +129,7 @@ def parse_args():
     parser.add_argument(
         "--require-ctrl",
         action="store_true",
-        help="also require Ctrl to be held with Super+Fx",
+        help="also require Ctrl to be held with Super+1..6",
     )
     return parser.parse_args()
 
@@ -151,7 +146,7 @@ def main():
         return 1
     try:
         sys.stderr.write(f"vt-hotkeyd: listening on {device}\n")
-        sys.stderr.write("vt-hotkeyd: press Super+F1..F12 to switch VTs\n")
+        sys.stderr.write("vt-hotkeyd: press Super+1..6 to switch VTs\n")
         run_loop(fd, require_ctrl=args.require_ctrl)
     except KeyboardInterrupt:
         sys.stderr.write("vt-hotkeyd: interrupted, exiting\n")
