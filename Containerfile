@@ -11,7 +11,7 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1
 
 RUN dnf5 install -y \
-  @swaywm @swaywm-extended glibc-langpack-en \
+  @swaywm @swaywm-extended cage glibc-langpack-en \
   @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   @firefox google-chrome-stable
 
