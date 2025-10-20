@@ -1,0 +1,5 @@
+polkit.addRule(function(action, subject) {
+  if (action.id == "org.freedesktop.login1.chvt" && subject.isInGroup("tty")) {
+    return polkit.Result.YES;
+  }
+});
