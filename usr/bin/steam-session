@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 set -eu
 
 command -v gamescope >/dev/null 2>&1 || { echo "gamescope not found" >&2; exit 1; }

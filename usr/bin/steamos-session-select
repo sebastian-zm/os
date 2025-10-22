@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 set -eu
 
 # Ask Steam to shutdown if installed

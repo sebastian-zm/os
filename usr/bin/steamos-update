@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # steamos-update: Deck UI-compatible update shim for bootc
 set -Eeuo pipefail
 
