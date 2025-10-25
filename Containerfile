@@ -1,3 +1,10 @@
+FROM quay.io/fedora/fedora-minimal:42 AS build-clipboard-sync
+
+WORKDIR /src
+RUN dnf install -y git rpm-build rpmdevtools libxcb-devel systemd-rpm-macros rust cargo
+RUN git clone --depth 1 https://github.com/dnut/clipboard-sync.git .
+RUN make rpm
+
 FROM quay.io/fedora/fedora-bootc:42
 
 RUN dnf5 install -y \
@@ -43,10 +50,17 @@ RUN rpm -Uvh --nodeps \
   echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module && \
   ln -sf /usr/share/libpkcs11-dnie/AC\ RAIZ\ DNIE\ 2.crt /usr/share/pki/ca-trust-source/anchors/AC\ RAIZ\ DNIE\ 2.crt
 
+COPY --from=build-clipboard-sync /root/rpmbuild/RPMS/*/clipboard-sync-*.rpm /tmp/
+RUN dnf5 install -y /tmp/clipboard-sync-*.rpm \
+    && \
+    rm -f /tmp/clipboard-sync-*.rpm
+
 COPY usr/ /usr/
 
-RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* && \
-  systemctl disable bootc-fetch-apply-updates.timer && \
+RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
+  && \
+  systemctl disable bootc-fetch-apply-updates.timer \
+  && \
   systemctl enable psacct.service
 
 
