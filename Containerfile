@@ -2,7 +2,7 @@ FROM quay.io/fedora/fedora-minimal:42 AS build-clipboard-sync
 
 WORKDIR /src
 RUN dnf install -y git rpm-build rpmdevtools libxcb-devel systemd-rpm-macros rust cargo
-RUN git clone --depth 1 https://github.com/dnut/clipboard-sync.git .
+RUN git clone --depth 1 https://github.com/sebastian-zm/clipboard-sync.git .
 RUN make rpm
 
 FROM quay.io/fedora/fedora-bootc:42
