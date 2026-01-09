@@ -1,11 +1,11 @@
-FROM quay.io/fedora/fedora-minimal:42 AS build-clipboard-sync
+FROM quay.io/fedora/fedora-minimal:43 AS build-clipboard-sync
 
 WORKDIR /src
 RUN dnf install -y git rpm-build rpmdevtools libxcb-devel systemd-rpm-macros rust cargo
 RUN git clone --depth 1 https://github.com/sebastian-zm/clipboard-sync.git .
 RUN make rpm
 
-FROM quay.io/fedora/fedora-bootc:42
+FROM quay.io/fedora/fedora-bootc:43
 
 RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
