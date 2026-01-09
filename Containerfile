@@ -39,9 +39,7 @@ RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' ker
     depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
 
 
-RUN dnf5 clean all \
-  && \
-  systemctl set-default multi-user.target
+RUN systemctl set-default multi-user.target
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
@@ -68,7 +66,7 @@ RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
 RUN mkdir -p /nix
 
 # Lint the container
-RUN rm -rf /var/cache/libdnf5/* /var/cache/libdnf5 2>/dev/null || true && find /var -type f -delete && bootc container lint --no-truncate --fatal-warnings
+RUN dnf clean all && bootc container lint --no-truncate --fatal-warnings
 
 # Metadata labels
 LABEL containers.bootc="1" \
