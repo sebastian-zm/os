@@ -64,9 +64,9 @@ RUN mkdir -p /nix
 
 # Clean up /var and lint the container
 RUN dnf5 clean all && \
-   find /var/log -name "*.log*" -type f -delete && \
-   find /var/cache/libdnf5 -type d -delete && \
-   find /var/lib/dnf/repos -type d -delete && \
+   find /var/log -type f -delete && \
+   find /var/cache/libdnf5 -type d -exec rm -rf {} + && \
+   find /var/lib/dnf/repos -type d -exec rm -rf {} + && \
    rm -rf /var/lib/systemd/catalog/database \
      /var/lib/authselect/checksum \
      /var/cache/ldconfig/aux-cache \
