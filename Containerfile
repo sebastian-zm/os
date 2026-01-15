@@ -18,7 +18,7 @@ RUN dnf5 install -y \
   dnf5 config-manager setopt google-chrome.enabled=1
 
 RUN dnf5 install -y \
-  @swaywm @swaywm-extended cage tmux kmscon kmscon-gl glibc-langpack-en \
+  @swaywm @swaywm-extended cage glibc-langpack-en \
   @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
   @firefox google-chrome-stable
 
@@ -37,9 +37,6 @@ RUN dnf5 install -y \
 # Build for the kernel that’s in the image, then refresh modules.dep
 RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
     depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
-
-
-RUN systemctl set-default multi-user.target
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist.
@@ -65,8 +62,18 @@ RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
 # Allow nix installer, for user configuration with home-manager, which cannot work without a /nix directory to bind mount to
 RUN mkdir -p /nix
 
-# Lint the container
-RUN dnf clean all && bootc container lint --no-truncate --fatal-warnings
+# Clean up /var and lint the container
+RUN dnf5 clean all && \
+   find /var/log -name "*.log*" -type f -delete && \
+   find /var/cache/libdnf5 -type d -delete && \
+   find /var/lib/dnf/repos -type d -delete && \
+   rm -rf /var/lib/systemd/catalog/database \
+     /var/lib/authselect/checksum \
+     /var/cache/ldconfig/aux-cache \
+     /var/cache/akmods && \
+   find /var/cache -type f -delete && \
+   bootc container lint --no-truncate --fatal-warnings
+
 
 # Metadata labels
 LABEL containers.bootc="1" \
