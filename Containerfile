@@ -15,6 +15,8 @@ RUN dnf5 install -y \
   && \
   dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
   && \
+  dnf5 config-manager addrepo --from-repofile=https://packages.microsoft.com/config/fedora/$(rpm -E %fedora)/prod.repo \
+  && \
   dnf5 config-manager setopt google-chrome.enabled=1
 
 RUN dnf5 install -y \
@@ -23,7 +25,7 @@ RUN dnf5 install -y \
   @firefox google-chrome-stable
 
 RUN dnf5 install -y \
-  nodejs ruby golang uv nix \
+  nodejs ruby golang uv nix powershell \
   java-25-openjdk maven \
   rust cargo
 
@@ -38,6 +40,9 @@ RUN dnf5 install -y \
   v4l2loopback akmod-v4l2loopback \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn
+
+RUN dnf5 install -y \
+  code neovim
 
 # Build for the kernel that’s in the image, then refresh modules.dep
 RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
