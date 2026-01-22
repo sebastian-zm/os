@@ -23,7 +23,7 @@ RUN dnf5 install -y \
   @firefox google-chrome-stable
 
 RUN dnf5 install -y \
-  nodejs ruby golang uv \
+  nodejs ruby golang uv nix \
   java-25-openjdk maven \
   rust cargo
 
@@ -61,11 +61,9 @@ RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
   && \
   systemctl disable bootc-fetch-apply-updates.timer \
   && \
+  systemctl enable ostree-state-overlay@nix.service \
+  && \
   systemctl enable psacct.service
-
-
-# Allow nix installer, for user configuration with home-manager, which cannot work without a /nix directory to bind mount to
-RUN mkdir -p /nix
 
 # Clean up /var and lint the container
 RUN dnf5 clean all && \
