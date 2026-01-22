@@ -23,7 +23,7 @@ RUN dnf5 install -y \
   @firefox google-chrome-stable
 
 RUN dnf5 install -y \
-  nodejs ruby golang \
+  nodejs ruby golang uv \
   java-25-openjdk maven \
   rust cargo
 
