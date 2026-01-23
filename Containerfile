@@ -43,8 +43,7 @@ RUN dnf5 install -y \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn
 
-RUN dnf5 install -y \
-  code neovim
+RUN dnf5 install -y neovim
 
 # Build for the kernel that’s in the image, then refresh modules.dep
 RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
