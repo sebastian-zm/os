@@ -40,7 +40,7 @@ RUN dnf5 install -y \
 
 RUN dnf5 install -y \
   v4l2loopback akmod-v4l2loopback \
-  VirtualBox akmod-VirtualBox \
+  https://download.virtualbox.org/virtualbox/7.1.16/VirtualBox-7.1-7.1.16_172425_fedora40-1.x86_64.rpm \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn
 
