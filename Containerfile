@@ -1,10 +1,3 @@
-FROM quay.io/fedora/fedora-minimal:43 AS build-clipboard-sync
-
-WORKDIR /src
-RUN dnf install -y git rpm-build rpmdevtools libxcb-devel systemd-rpm-macros rust cargo
-RUN git clone --depth 1 https://github.com/sebastian-zm/clipboard-sync.git .
-RUN make rpm
-
 FROM quay.io/fedora/fedora-bootc:43
 
 RUN dnf5 install -y \
@@ -18,8 +11,6 @@ RUN dnf5 install -y \
   dnf5 config-manager addrepo --from-repofile=https://packages.microsoft.com/config/fedora/$(rpm -E %fedora)/prod.repo \
   && \
   dnf5 config-manager setopt google-chrome.enabled=1
-
-RUN dnf5 install -y packages-microsoft-prod
 
 RUN dnf5 install -y \
   @swaywm @swaywm-extended cage glibc-langpack-en \
@@ -53,16 +44,11 @@ RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' ker
     depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
 
 # DNIe
-# --nodeps because pinentry-gtk2 doesn't exist.
+# --nodeps because pinentry-gtk2 doesn't exist anymore.
 RUN rpm -Uvh --nodeps \
   https://www.dnielectronico.es/descargas/distribuciones_linux/libpkcs11-dnie-1.6.8-1.x86_64.rpm && \
   echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module && \
   ln -sf /usr/share/libpkcs11-dnie/AC\ RAIZ\ DNIE\ 2.crt /usr/share/pki/ca-trust-source/anchors/AC\ RAIZ\ DNIE\ 2.crt
-
-COPY --from=build-clipboard-sync /root/rpmbuild/RPMS/*/clipboard-sync-*.rpm /tmp/
-RUN dnf5 install -y /tmp/clipboard-sync-*.rpm \
-    && \
-    rm -f /tmp/clipboard-sync-*.rpm
 
 COPY usr/ /usr/
 
