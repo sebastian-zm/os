@@ -28,7 +28,7 @@ RUN dnf5 install -y \
 
 RUN dnf5 install -y \
   nodejs ruby golang uv nix \
-  java-25-openjdk maven \
+  java-25-openjdk java-25-openjdk-javadoc maven \
   rust cargo
 
 RUN dnf5 install -y \
@@ -45,6 +45,8 @@ RUN dnf5 install -y \
   @networkmanager-submodules NetworkManager-openvpn
 
 RUN dnf5 install -y neovim
+
+RUN dnf5 install -y genisoimage
 
 # Build for the kernel that’s in the image, then refresh modules.dep
 RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
