@@ -28,7 +28,7 @@ RUN dnf5 install -y \
 
 RUN dnf5 install -y \
   nodejs ruby golang uv nix \
-  java-25-openjdk java-25-openjdk-javadoc maven \
+  java-25-openjdk java-25-openjdk-javadoc java-25-openjdk-src maven \
   rust cargo
 
 RUN dnf5 install -y \
