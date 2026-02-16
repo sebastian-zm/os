@@ -35,7 +35,7 @@ RUN dnf5 install -y \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
   @networkmanager-submodules NetworkManager-openvpn
 
-RUN dnf5 install -y neovim
+RUN dnf5 install -y neovim btop
 
 RUN dnf5 install -y genisoimage
 
