@@ -25,6 +25,7 @@ RUN dnf5 install -y \
 RUN dnf5 install -y \
   steam gamescope mangohud \
   cascadia-code-nf-fonts cascadia-mono-nf-fonts \
+  google-noto-emoji-fonts \
   tailscale \
   git gh \
   skopeo jq
