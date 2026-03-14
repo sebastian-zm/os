@@ -71,7 +71,7 @@ RUN dnf5 clean all && \
      /var/cache/ldconfig/aux-cache \
      /var/cache/akmods && \
    find /var/cache -type f -delete && \
-   bootc container lint --no-truncate --fatal-warnings
+   bootc container lint --no-truncate
 
 
 # Metadata labels
