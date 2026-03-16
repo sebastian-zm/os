@@ -12,10 +12,11 @@ RUN dnf5 install -y \
   && \
   dnf5 config-manager setopt google-chrome.enabled=1
 
-RUN dnf5 install -y \
-  @swaywm @swaywm-extended cage glibc-langpack-en \
-  @standard @base-graphical @hardware-support @multimedia @fonts @domain-client @printing \
-  @firefox google-chrome-stable
+RUN dnf5 group install --with-optional -y \
+  swaywm swaywm-extended networkmanager-submodules \
+  standard base-graphical hardware-support multimedia fonts domain-client printing firefox
+
+RUN dnf5 install -y glibc-langpack-en google-chrome-stable
 
 RUN dnf5 install -y \
   nodejs ruby golang uv nix \
@@ -24,8 +25,6 @@ RUN dnf5 install -y \
 
 RUN dnf5 install -y \
   steam gamescope mangohud \
-  cascadia-code-nf-fonts cascadia-mono-nf-fonts \
-  google-noto-emoji-fonts \
   tailscale \
   git gh \
   skopeo jq
@@ -34,7 +33,7 @@ RUN dnf5 install -y \
   v4l2loopback akmod-v4l2loopback \
   VirtualBox akmod-VirtualBox \
   obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
-  @networkmanager-submodules NetworkManager-openvpn
+  NetworkManager-openvpn
 
 RUN dnf5 install -y neovim btop
 
