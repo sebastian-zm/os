@@ -1,5 +1,7 @@
 FROM quay.io/fedora/fedora-bootc:43
 
+RUN dnf5 group install hardware-support -y \
+
 RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
@@ -14,7 +16,7 @@ RUN dnf5 install -y \
 
 RUN dnf5 group install --with-optional -y \
   swaywm swaywm-extended networkmanager-submodules \
-  standard base-graphical hardware-support multimedia fonts domain-client printing firefox
+  standard base-graphical multimedia fonts domain-client printing firefox
 
 RUN dnf5 install -y glibc-langpack-en google-chrome-stable
 
@@ -61,16 +63,7 @@ RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
   systemctl enable psacct.service
 
 # Clean up /var and lint the container
-RUN dnf5 clean all && \
-   find /var/log -type f -delete && \
-   find /var/cache/libdnf5 -type d -exec rm -rf {} + && \
-   find /var/lib/dnf/repos -type d -exec rm -rf {} + && \
-   rm -rf /var/lib/systemd/catalog/database \
-     /var/lib/authselect/checksum \
-     /var/cache/ldconfig/aux-cache \
-     /var/cache/akmods && \
-   find /var/cache -type f -delete && \
-   bootc container lint --no-truncate
+RUN bootc container lint --no-truncate
 
 
 # Metadata labels
