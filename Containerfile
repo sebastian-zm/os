@@ -2,6 +2,8 @@ FROM quay.io/fedora/fedora-bootc:43
 
 COPY usr/ /usr/
 
+RUN dnf5 upgrade -y
+
 RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
