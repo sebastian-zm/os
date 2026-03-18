@@ -1,6 +1,6 @@
 FROM quay.io/fedora/fedora-bootc:43
 
-RUN dnf5 group install hardware-support -y \
+RUN dnf5 group install -y hardware-support
 
 RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
