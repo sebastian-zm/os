@@ -1,6 +1,6 @@
 FROM quay.io/fedora/fedora-bootc:43
 
-RUN dnf5 group install -y hardware-support
+COPY usr/ /usr/
 
 RUN dnf5 install -y \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
@@ -16,7 +16,7 @@ RUN dnf5 install -y \
 
 RUN dnf5 group install --with-optional -y \
   swaywm swaywm-extended networkmanager-submodules \
-  standard base-graphical multimedia fonts domain-client printing firefox
+  standard hardware-support base-graphical multimedia fonts domain-client printing firefox
 
 RUN dnf5 install -y glibc-langpack-en google-chrome-stable
 
@@ -41,10 +41,6 @@ RUN dnf5 install -y neovim btop
 
 RUN dnf5 install -y genisoimage
 
-# Build for the kernel that’s in the image, then refresh modules.dep
-RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
-    depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
-
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist anymore.
 RUN rpm -Uvh --nodeps \
@@ -52,7 +48,9 @@ RUN rpm -Uvh --nodeps \
   echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module && \
   ln -sf /usr/share/libpkcs11-dnie/AC\ RAIZ\ DNIE\ 2.crt /usr/share/pki/ca-trust-source/anchors/AC\ RAIZ\ DNIE\ 2.crt
 
-COPY usr/ /usr/
+# Build for the kernel that’s in the image, then refresh modules.dep
+RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
+    depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
 
 RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
   && \
