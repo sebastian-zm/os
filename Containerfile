@@ -12,16 +12,12 @@ RUN dnf5 install -y \
   && \
   dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/rhel/$(rpm -E %rhel)/tailscale.repo \
   && \
-  dnf5 config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo \
-  && \
-  dnf5 install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+  dnf5 config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
 
 RUN dnf5 group install --with-optional -y \
-  standard hardware-support base-graphical multimedia fonts domain-client printing
+  standard hardware-support domain-client
 
-RUN dnf5 install -y \
-  sway swaybg swayidle swaylock waybar foot \
-  glibc-langpack-en firefox
+RUN dnf5 install -y glibc-langpack-en
 
 RUN dnf5 install -y \
   nodejs ruby golang \
@@ -34,18 +30,14 @@ RUN dnf5 install -y \
   skopeo jq
 
 RUN dnf5 install -y \
-  v4l2loopback akmod-v4l2loopback \
-  VirtualBox akmod-VirtualBox \
+  v4l2loopback kmod-v4l2loopback \
+  VirtualBox kmod-VirtualBox \
   obs-studio obs-studio-plugin-x264 \
   NetworkManager-openvpn
 
 RUN dnf5 install -y neovim btop
 
 RUN dnf5 install -y genisoimage
-
-# Build kernel modules for the image kernel, then refresh modules.dep
-RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
-    depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
 
 RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
   && \
