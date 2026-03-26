@@ -1,34 +1,34 @@
-FROM quay.io/fedora/fedora-bootc:43
+FROM registry.redhat.io/rhel10/rhel-bootc:10
 
 COPY usr/ /usr/
 
 RUN dnf5 upgrade -y
 
 RUN dnf5 install -y \
-  https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
-  fedora-workstation-repositories \
+  https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm \
+  https://download1.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm \
+  https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm \
   dnf5-plugins \
   && \
-  dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+  dnf5 config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/rhel/$(rpm -E %rhel)/tailscale.repo \
   && \
-  dnf5 config-manager addrepo --from-repofile=https://packages.microsoft.com/config/fedora/$(rpm -E %fedora)/prod.repo \
+  dnf5 config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo \
   && \
-  dnf5 config-manager setopt google-chrome.enabled=1
+  dnf5 install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 
 RUN dnf5 group install --with-optional -y \
-  swaywm swaywm-extended networkmanager-submodules \
-  standard hardware-support base-graphical multimedia fonts domain-client printing firefox
-
-RUN dnf5 install -y glibc-langpack-en google-chrome-stable
+  standard hardware-support base-graphical multimedia fonts domain-client printing
 
 RUN dnf5 install -y \
-  nodejs ruby golang uv nix \
-  java-25-openjdk java-25-openjdk-javadoc java-25-openjdk-src maven \
+  sway swaybg swayidle swaylock waybar foot \
+  glibc-langpack-en firefox
+
+RUN dnf5 install -y \
+  nodejs ruby golang \
+  java-21-openjdk java-21-openjdk-javadoc java-21-openjdk-src maven \
   rust cargo
 
 RUN dnf5 install -y \
-  steam gamescope mangohud \
   tailscale \
   git gh \
   skopeo jq
@@ -36,29 +36,20 @@ RUN dnf5 install -y \
 RUN dnf5 install -y \
   v4l2loopback akmod-v4l2loopback \
   VirtualBox akmod-VirtualBox \
-  obs-studio obs-studio-plugin-x264 obs-studio-plugin-vkcapture \
+  obs-studio obs-studio-plugin-x264 \
   NetworkManager-openvpn
 
 RUN dnf5 install -y neovim btop
 
 RUN dnf5 install -y genisoimage
 
-# DNIe
-# --nodeps because pinentry-gtk2 doesn't exist anymore.
-RUN rpm -Uvh --nodeps \
-  https://www.dnielectronico.es/descargas/distribuciones_linux/libpkcs11-dnie-1.6.8-1.x86_64.rpm && \
-  echo "module: /usr/lib64/libpkcs11-dnie.so" > /usr/share/p11-kit/modules/dnie.module && \
-  ln -sf /usr/share/libpkcs11-dnie/AC\ RAIZ\ DNIE\ 2.crt /usr/share/pki/ca-trust-source/anchors/AC\ RAIZ\ DNIE\ 2.crt
-
-# Build for the kernel that’s in the image, then refresh modules.dep
+# Build kernel modules for the image kernel, then refresh modules.dep
 RUN akmods --force --kernels $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core) && \
     depmod -a $(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core)
 
 RUN chmod +x /usr/bin/* /usr/bin/steamos-polkit-helpers/* \
   && \
   systemctl disable bootc-fetch-apply-updates.timer \
-  && \
-  systemctl enable ostree-state-overlay@nix.service \
   && \
   systemctl enable psacct.service
 

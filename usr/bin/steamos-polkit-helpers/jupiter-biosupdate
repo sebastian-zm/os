@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -eu
-
-exec /usr/bin/jupiter-biosupdate
