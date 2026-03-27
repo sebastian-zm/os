@@ -41,7 +41,7 @@ RUN dnf5 install -y \
 
 RUN dnf5 install -y neovim btop
 
-RUN dnf5 install -y genisoimage
+RUN dnf5 install -y genisoimage subscription-manager
 
 # DNIe
 # --nodeps because pinentry-gtk2 doesn't exist anymore.
